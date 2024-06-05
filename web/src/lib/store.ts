@@ -5,5 +5,7 @@ export const webhookUrl: Writable<string | undefined> = persisted(
   "webhook-url",
   undefined
 );
+export type WebhookUrl = typeof webhookUrl;
 
-export type WebhookUrl = typeof webhookUrl
+export const filesList: Writable<FileMeta[]> = persisted("files-list", []);
+export type FilesList = typeof filesList;

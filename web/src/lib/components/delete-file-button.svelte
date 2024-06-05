@@ -4,39 +4,28 @@
   import Loading from "lucide-svelte/icons/loader-circle";
   import { page } from "$app/stores";
   import { toast } from "svelte-sonner";
+  import { filesList } from "@/store";
 
-  export let id: number;
-  export let reloader: () => void = () => {};
+  export let file: FileMeta;
   const URL = $page.data.webhookUrl;
   let deleting = false;
 
-  function triggerRefresh() {
-    const event = new CustomEvent("refreshFiles", {
-      detail: {},
-    });
-    window.dispatchEvent(event);
-  }
-
   async function deleteFile(): Promise<void> {
     deleting = true;
-    const response = await fetch(
-      `${$page.data.backend_url}/handleFile?id=${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Webhook-URL": $URL ?? "",
-        },
-      }
-    );
-    console.log(response);
+    const response = await fetch(`${$page.data.backend_url}/delete`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        file,
+        webhook_url: $URL,
+      }),
+    });
     if (response.status === 200) {
+      $filesList = $filesList.filter((f) => f.created !== file.created);
       toast.success("File deleted successfully");
-      reloader();
     } else {
       toast.error("Failed to delete file");
     }
     deleting = false;
-    triggerRefresh();
   }
 </script>
 

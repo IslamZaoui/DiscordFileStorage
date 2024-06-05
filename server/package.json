@@ -1,26 +1,13 @@
 {
-  "name": "bun-apis",
-  "module": "server.ts",
-  "type": "module",
   "scripts": {
-    "start": "bun --watch run ./src/server.ts",
-    "build:linux": "bun build --compile --minify --sourcemap --target=bun-linux-x64 ./src/server.ts --outfile ./build/discordfs",
-    "build:windows": "bun build --compile --minify --sourcemap --target=bun-windows-x64 ./src/server.ts --outfile ./build/discordfs",
-    "preview": "bun run ./build/discordfs",
-    "db:generate": "bunx prisma generate",
-    "db:push": "bunx prisma db push"
+    "dev": "bun run --hot src/app.ts"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "hono": "^4.4.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "@prisma/client": "5.14.0",
-    "discord.js": "^14.15.2",
-    "prisma": "^5.14.0",
-    "split-file": "^2.3.0",
-    "zod": "^3.23.8"
   }
 }

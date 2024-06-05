@@ -1,11 +1,15 @@
 declare global {
-  type FilesMetadata = {
-    id: number;
+  type FileMeta = {
     filename: string;
     filetype: string;
     size: number;
-    chunks: number;
-    created: Date;
+    chunks: chunk[];
+    created: string;
+  };
+
+  type chunk = {
+    message_id: string;
+    order: number;
   };
 
   namespace App {

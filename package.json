@@ -2,6 +2,6 @@
   "name": "discordfilestorage",
   "type": "module",
   "scripts": {
-    "dev": "conc --kill-others \"cd ./server && bun run start\" \"cd ./web && bun run dev\""
+    "dev": "conc --kill-others \"cd ./server && bun run dev\" \"cd ./web && bun run dev\""
   }
 }

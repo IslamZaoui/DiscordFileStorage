@@ -30,11 +30,7 @@ export async function chunkFile(file: File) {
   }));
 }
 
-export function combineChunks(
-  chunks: Buffer[],
-  filename: string,
-  filetype: string
-): Blob {
+export function combineChunks(chunks: Buffer[], filetype: string): Blob {
   if (chunks.length === 0) {
     throw new Error("No valid chunks to combine");
   }

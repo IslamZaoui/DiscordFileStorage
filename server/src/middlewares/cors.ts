@@ -1,17 +1,9 @@
-// Server configuration
-const allowedOrigin = Bun.env.ORIGIN;
+import { cors } from "hono/cors";
 
-// Add CORS headers middleware
-export const addCorsHeaders = (response: Response, origin: string) => {
-  if (origin === allowedOrigin) {
-    response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
-    response.headers.set(
-      "Access-Control-Allow-Methods",
-      "GET, POST, OPTIONS, DELETE"
-    );
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, Webhook-URL"
-    );
-  }
-};
+export const corsMiddleware = cors({
+  origin: process.env.ORIGIN ?? "http://localhost:5173",
+  allowHeaders: ["Content-Type", "Webhook-URL"],
+  allowMethods: ["POST", "GET", "OPTIONS", "DELETE"],
+  maxAge: 600,
+  credentials: true,
+});

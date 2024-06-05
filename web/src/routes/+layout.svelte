@@ -13,15 +13,15 @@
 <Toaster richColors />
 <main class="size-screen">
   <nav class="sticky top-0 w-full p-6 bg-background">
-    <div class="max-w-[900px] mx-auto flex justify-between items-center gap-8">
+    <div
+      class="max-w-4xl w-full mx-auto flex justify-between items-center gap-8"
+    >
       <h1 class="text-2xl font-bold"><a href="/">Discord File Storage</a></h1>
-      <div>
-        {#if !$webhookUrl}
-          <SetupWebhookDialog />
-        {:else}
-          <UploadFileDialog />
-        {/if}
-      </div>
+      {#if !$webhookUrl}
+        <SetupWebhookDialog />
+      {:else}
+        <UploadFileDialog />
+      {/if}
     </div>
   </nav>
   <slot />

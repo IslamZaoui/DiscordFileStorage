@@ -8,29 +8,38 @@
   import { webhookSchema } from "@/index";
   import { Input } from "@/components/ui/input";
   import { page } from "$app/stores";
+  import { writable } from "svelte/store";
 
   let formElement: HTMLFormElement;
   const url = $page.data.backend_url;
   $: webhookUrl = $page.data.webhookUrl;
 
+  let message = writable<string | undefined>(undefined);
+
   const form = superForm(defaults(zod(webhookSchema)), {
     SPA: true,
     validators: zod(webhookSchema),
     async onUpdate({ form }) {
+      $message = undefined;
       if (form.valid) {
-        const response = await fetch(`${url}/check`, {
-          method: "POST",
-          headers: {
-            "Webhook-URL": form.data.webhook_url,
-          },
-        });
-        if (response.status === 200) {
-          $webhookUrl = form.data.webhook_url;
-          open = false;
-          toast.success("Webhook setup successfully");
-        } else if (response.status === 400) {
-          $errors.webhook_url = ["Invalid webhook URL"];
-        } else {
+        try {
+          const response = await fetch(`${url}/check`, {
+            method: "POST",
+            body: JSON.stringify({
+              webhook_url: form.data.webhook_url,
+            }),
+          });
+          if (response.status === 200) {
+            $webhookUrl = form.data.webhook_url;
+            open = false;
+            toast.success("Webhook setup successfully");
+          } else if (response.status === 400) {
+            $message = "Invalid webhook URL";
+          } else {
+            toast.error("Failed to setup webhook");
+          }
+          formElement.reset();
+        } catch (err) {
           toast.error("Failed to setup webhook");
         }
       }
@@ -44,16 +53,16 @@
 
 <AlertDialog.Root bind:open>
   <AlertDialog.Trigger asChild>
-    <Button variant="outline" on:click={() => (open = true)}
-      >Setup Webhook</Button
-    >
+    <Button variant="outline" on:click={() => (open = true)}>
+      Setup Webhook
+    </Button>
   </AlertDialog.Trigger>
   <AlertDialog.Content>
     <AlertDialog.Header>
       <AlertDialog.Title>Enter your webhook url</AlertDialog.Title>
       <AlertDialog.Description>
-        you dont have one? chech this <a class="link" href="/guide">link</a> to know
-        how to get it.
+        you dont have one? chech this <a class="link" href="/guide">link</a>
+        to know how to get it.
       </AlertDialog.Description>
     </AlertDialog.Header>
     <form use:enhance bind:this={formElement}>
@@ -66,16 +75,18 @@
             bind:value={$formData.webhook_url}
           />
         </Form.Control>
-        <Form.Description />
+        {#if $message}
+          <span class="py-3">{$message}</span>
+        {/if}
         <Form.FieldErrors />
       </Form.Field>
     </form>
     <AlertDialog.Footer>
       <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
       <AlertDialog.Action asChild>
-        <Button disabled={$delayed} on:click={() => form.submit(formElement)}
-          >Submit</Button
-        >
+        <Button disabled={$delayed} on:click={() => form.submit(formElement)}>
+          Submit
+        </Button>
       </AlertDialog.Action>
     </AlertDialog.Footer>
   </AlertDialog.Content>

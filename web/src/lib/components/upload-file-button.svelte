@@ -5,6 +5,7 @@
   import Loading from "lucide-svelte/icons/loader-circle";
   import Button from "./ui/button/button.svelte";
   import { Progress } from "./ui/progress";
+  import { filesList } from "@/store";
 
   const URL = $page.data.backend_url;
   $: webhookUrl = $page.data.webhookUrl;
@@ -47,6 +48,8 @@
 
       xhr.onload = () => {
         if (xhr.status === 200) {
+          const res: FileMeta = JSON.parse(xhr.responseText);
+          $filesList = [...$filesList, res];
           resolve();
         } else {
           reject(new Error(`Upload failed with status ${xhr.status}`));
@@ -66,7 +69,7 @@
         reject(new Error("Upload failed"));
       };
 
-      xhr.open("POST", `${URL}/handleFile`, true);
+      xhr.open("POST", `${URL}/upload`, true);
       xhr.send(formData);
     });
   }

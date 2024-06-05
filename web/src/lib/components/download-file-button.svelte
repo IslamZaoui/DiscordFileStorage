@@ -5,18 +5,19 @@
   import Download from "lucide-svelte/icons/download";
   import Loading from "lucide-svelte/icons/loader-circle";
 
-  export let id: number;
-  export let filename: string;
+  export let file: FileMeta;
   $: webhookUrl = $page.data.webhookUrl;
   let downloading = false;
 
-  async function fetchFile(link: string) {
+  async function fetchFile() {
     downloading = true;
     try {
-      const response = await fetch(link, {
-        headers: {
-          "Webhook-URL": $webhookUrl ?? "",
-        },
+      const response = await fetch(`${$page.data.backend_url}/download`, {
+        method: "POST",
+        body: JSON.stringify({
+          file,
+          webhook_url: $webhookUrl,
+        }),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -27,19 +28,19 @@
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = filename;
+      a.download = file.filename;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download failed:", error);
+      downloading = false;
+    } catch (_) {
+      downloading = false;
+      throw new Error("Download failed");
     }
-    downloading = false;
   }
   async function download() {
-    const href = `${$page.data.backend_url}/download?id=${id}`;
-    toast.promise(fetchFile(href), {
+    toast.promise(fetchFile(), {
       loading: "Downloading file...",
       success: "File downloaded successfully",
       error: "Download failed",
