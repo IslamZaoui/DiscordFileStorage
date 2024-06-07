@@ -1,6 +1,6 @@
 <script>
     import Footer from "./footer.svelte";
-    import Header from "./feader.svelte";
+    import Header from "./header.svelte";
 
     export let data;
 
