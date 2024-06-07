@@ -5,42 +5,31 @@
     import { toast } from "svelte-sonner";
     import { zod } from "sveltekit-superforms/adapters";
     import * as Form from "@/components/ui/form/index";
-    import { joinURL, webhookSchema } from "@/index";
+    import { backendschema } from "@/index";
     import { Input } from "@/components/ui/input";
-    import { page } from "$app/stores";
+    import { backendURL } from "@/store";
 
     let formElement: HTMLFormElement;
-    $: backendUrl = $page.data.backendURL;
-    $: webhookUrl = $page.data.webhookUrl;
 
-    const form = superForm(defaults(zod(webhookSchema)), {
+    const form = superForm(defaults(zod(backendschema)), {
         SPA: true,
-        validators: zod(webhookSchema),
+        validators: zod(backendschema),
         async onUpdate({ form }) {
-            if (form.valid) {
-                try {
-                    const response = await fetch(
-                        joinURL($backendUrl as string, `/check`),
-                        {
-                            method: "POST",
-                            body: JSON.stringify({
-                                webhook_url: form.data.webhook_url,
-                            }),
-                        }
-                    );
-                    if (response.status === 200) {
-                        $webhookUrl = form.data.webhook_url;
-                        open = false;
-                        toast.success("Webhook setup successfully");
-                    } else if (response.status === 400) {
-                        $errors.webhook_url = ["Invalid webhook URL"];
-                    } else {
-                        toast.error("Failed to setup webhook");
-                    }
-                    formElement.reset();
-                } catch (err) {
-                    toast.error("Failed to setup webhook");
+            try {
+                const rep = await fetch(form.data.backend_url);
+                if (
+                    rep.status === 200 &&
+                    (await rep.json())?.message ===
+                        "Discord File Storage API online ✔"
+                ) {
+                    backendURL.set(form.data.backend_url);
+                    open = false;
+                    toast.success("Backend setup successfully");
+                } else {
+                    $errors.backend_url = ["Invalid backend URL"];
                 }
+            } catch (err) {
+                toast.error("Failed to setup backend");
             }
         },
     });
@@ -53,12 +42,12 @@
 <AlertDialog.Root bind:open>
     <AlertDialog.Trigger asChild>
         <Button variant="outline" class="w-full" on:click={() => (open = true)}>
-            Setup Webhook
+            Setup API URL
         </Button>
     </AlertDialog.Trigger>
     <AlertDialog.Content>
         <AlertDialog.Header>
-            <AlertDialog.Title>Enter your webhook url</AlertDialog.Title>
+            <AlertDialog.Title>Enter your API url</AlertDialog.Title>
             <AlertDialog.Description>
                 you dont have one? chech this <a
                     class="link"
@@ -71,13 +60,13 @@
             </AlertDialog.Description>
         </AlertDialog.Header>
         <form use:enhance bind:this={formElement}>
-            <Form.Field {form} name="webhook_url">
+            <Form.Field {form} name="backend_url">
                 <Form.Control let:attrs>
                     <Form.Label />
                     <Input
                         {...attrs}
                         type="password"
-                        bind:value={$formData.webhook_url}
+                        bind:value={$formData.backend_url}
                     />
                 </Form.Control>
                 <Form.FieldErrors />

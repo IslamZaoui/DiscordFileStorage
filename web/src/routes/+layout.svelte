@@ -1,28 +1,12 @@
 <script>
-  import Button from "@/components/ui/button/button.svelte";
-  import "../app.pcss";
-  import SetupWebhookDialog from "@/components/setup-webhook-dialog.svelte";
-  import UploadFileDialog from "@/components/upload-file-button.svelte";
-  import { Toaster } from "$lib/components/ui/sonner";
+    import "../app.pcss";
+    import MainLayout from "@/components/layout/main-layout.svelte";
+    import { Toaster } from "$lib/components/ui/sonner";
 
-  export let data;
-
-  $: webhookUrl = data.webhookUrl;
+    export let data;
 </script>
 
-<Toaster richColors />
-<main class="size-screen">
-  <nav class="sticky top-0 w-full p-6 bg-background">
-    <div
-      class="max-w-4xl w-full mx-auto flex justify-between items-center gap-8"
-    >
-      <h1 class="text-2xl font-bold"><a href="/">Discord File Storage</a></h1>
-      {#if !$webhookUrl}
-        <SetupWebhookDialog />
-      {:else}
-        <UploadFileDialog />
-      {/if}
-    </div>
-  </nav>
-  <slot />
-</main>
+<Toaster richColors expand={true} />
+<MainLayout {data}>
+    <slot />
+</MainLayout>
