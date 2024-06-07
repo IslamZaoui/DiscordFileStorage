@@ -49,14 +49,14 @@
         <AlertDialog.Header>
             <AlertDialog.Title>Enter your API url</AlertDialog.Title>
             <AlertDialog.Description>
-                you dont have one? chech this <a
-                    class="link"
-                    on:click={() => (open = false)}
-                    href="/guide"
-                >
-                    link
-                </a>
-                to know how to get it.
+                you dont have one? chech project repository for more info or use
+                this public URL <span class="font-bold">
+                    https://discordfilesystem.fly.dev/
+                </span>
+                <br />
+                <span class="font-bold">
+                    Max upload size: 200MB in the public API
+                </span>
             </AlertDialog.Description>
         </AlertDialog.Header>
         <form use:enhance bind:this={formElement}>

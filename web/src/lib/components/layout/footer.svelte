@@ -15,14 +15,13 @@
         </div>
         <p class="text-sm">Copyright © 2024. All rights reserved.</p>
         <nav class="text-sm flex items-center gap-6">
-            <a href="/guide" class="font-bold hover:underline">Guide</a>
             <a
                 href="https://github.com/IslamZaoui/DiscordFileStorage"
                 target="_blank"
                 class="font-bold hover:underline"
             >
                 Source Code
-            </a>    
+            </a>
         </nav>
     </div>
 </footer>

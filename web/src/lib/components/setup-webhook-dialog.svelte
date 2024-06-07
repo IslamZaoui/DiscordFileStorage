@@ -60,14 +60,9 @@
         <AlertDialog.Header>
             <AlertDialog.Title>Enter your webhook url</AlertDialog.Title>
             <AlertDialog.Description>
-                you dont have one? chech this <a
-                    class="link"
-                    on:click={() => (open = false)}
-                    href="/guide"
-                >
-                    link
-                </a>
-                to know how to get it.
+                you dont have one? go to your discord server > right click on
+                channel > Edit Channel > Integrations > Webhooks > create or use
+                existing one > copy and paste it here
             </AlertDialog.Description>
         </AlertDialog.Header>
         <form use:enhance bind:this={formElement}>
